@@ -1,0 +1,1697 @@
+{
+    "metadata": {
+        "kernelspec": {
+            "name": "SQL",
+            "display_name": "SQL",
+            "language": "sql"
+        },
+        "language_info": {
+            "name": "sql",
+            "version": ""
+        }
+    },
+    "nbformat_minor": 2,
+    "nbformat": 4,
+    "cells": [
+        {
+            "cell_type": "markdown",
+            "source": [
+                "<span style=\"color: rgb(34, 34, 34); font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 30px; font-weight: bold; text-align: center;\">Case Study #2 - Pizza Runner</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "0d6e8c65-541d-4542-b2e9-8dfcec499319"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "<span style=\"caret-color: rgb(64, 64, 64); color: rgb(64, 64, 64); font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 18px; text-size-adjust: auto; background-color: rgb(255, 255, 255);\">Danny was scrolling through his Instagram feed when something really caught his eye - “80s Retro Styling and Pizza Is The Future!”.&nbsp;<span style=\"font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; text-size-adjust: auto;\">Danny was sold on the idea, but he knew that pizza alone was not going to help him get seed funding to expand his new Pizza Empire.<br></span></span>\n",
+                "\n",
+                "<span style=\"caret-color: rgb(64, 64, 64); color: rgb(64, 64, 64); font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 18px; text-size-adjust: auto; background-color: rgb(255, 255, 255);\"><span style=\"font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; text-size-adjust: auto;\">Because Danny had a few years of experience as a data scientist - he was very aware that data collection was going to be critical for his business’ growth.</span></span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "e236538d-4d09-47a9-ace4-ecb7b67cb94f"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **Changes in tables before starting to answer the questions**\n",
+                "\n",
+                "- Had to change time of Order\\_date from TIMESTAMP to DATETIME because was facing problem in it. (customer orders)\n",
+                "- Pickup\\_time in runners\\_order table is set to VARCHAR change it to DATETIME.  (Danny did it deliberately :P)"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "2a77f9bb-1367-40c2-b677-f73f30bb91ed"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "## **Pizza Metrics**\n",
+                "\n",
+                "**1\\. How many pizzas ordered ?**"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "beb85bfa-8882-4814-9395-405da34e8868"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Ans : - Nothing fancy here. Used count on order\\_id column to get the total number of orders."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "c92f6eb2-a570-469e-a5dd-ed1ce9135524"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(order_id) as Total_Pizzas_ordered from customer_orders"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "b820fc84-3674-4304-bda3-c355d97aa2cf",
+                "tags": []
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(1 row affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.050"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 3,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "Total_Pizzas_ordered"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "14"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>Total_Pizzas_ordered</th></tr><tr><td>14</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 3
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **2.** <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\"><b>How many unique customer orders were made?</b></span>\n",
+                "\n",
+                "### <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Used <b>COUNT</b> on customer_id column but as the question says to find unique customers used <b>DISTINCT</b>&nbsp;to find unique customers.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "bb1641c8-2c9a-46d7-bed7-6d1a04a430ea"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(distinct(customer_id)) as unique_customers from customer_orders"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "85faaed5-cea2-48cf-8547-e30722d6133c",
+                "tags": []
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(1 row affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.183"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 4,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "unique_customers"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "5"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>unique_customers</th></tr><tr><td>5</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 4
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **3. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">How many successful orders were delivered by each runner?</span>**\n",
+                "\n",
+                "Ans :- Before writing the actual query we need to make some changes in the table. As we can see that some of the values in **cancellation column** are **NULL** even though rest of the columns in that table contain values. So we need to fix it otherwise we wont be getting out desired output. \n",
+                "\n",
+                "I'll use the **UPDATE** query in this to change values of the column"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "b8fb80bf-14d4-4086-a013-3c7ffe0a1994"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "update runner_orders\n",
+                "set cancellation = 'null'\n",
+                "where cancellation is NULL"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "4c7d3fc0-bd3a-45b8-a9e2-275137013200",
+                "tags": []
+            },
+            "outputs": [],
+            "execution_count": null
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Then I joined two tables 'customer\\_orders' and 'runner\\_orders' and used **NOT LIKE** clause to filter out the orders that were sucessfully delivered and **grouped it by** runner\\_id to get successful orders delivered by each runner."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "65d4f396-7534-4909-a40d-35a2a24c3808"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(a.order_id) as total_successful_orders, b.runner_id from customer_orders a inner join runner_orders b on a.order_id = b.order_id where b.cancellation NOT LIKE '%Cancellation%' group by b.runner_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "f8240b4e-9396-4fc0-886a-8b33e0d088f0",
+                "tags": []
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(3 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.059"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 8,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "total_successful_orders"
+                                    },
+                                    {
+                                        "name": "runner_id"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "6",
+                                    "1": "1"
+                                },
+                                {
+                                    "0": "5",
+                                    "1": "2"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "3"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>total_successful_orders</th><th>runner_id</th></tr><tr><td>6</td><td>1</td></tr><tr><td>5</td><td>2</td></tr><tr><td>1</td><td>3</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 8
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt :-\n",
+                "\n",
+                "- exsistance of NOT LIKE\n",
+                "- when we need to update column with **NULL** values we cannot use (where column = null). We have to use (where column is null) because null is a special value."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "13d9cc00-bf60-4a31-a532-140d0a6e3e05"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**4. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">How many of each type of pizza was delivered?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; font-weight: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Had to change data type of pizza_name column from text to varchar(25) because text can only be used to compare with null</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "08e2f211-b988-42fd-90ff-1c499ff74be2"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "alter table pizza_names\n",
+                "alter COLUMN pizza_name varchar(25) "
+            ],
+            "metadata": {
+                "azdata_cell_guid": "6cf626f7-04f7-4767-9523-ea820e475a58",
+                "tags": []
+            },
+            "outputs": [],
+            "execution_count": null
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "After that, joined all the 3 required tables with where condition to filter out the successfully delivered orders and grouped them using pizza\\_name column to get the total number of pizzas ordered for each type."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "4477a2de-d1b8-4646-a1bd-30687743f3c0"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(a.pizza_id) as total_pizza, c.pizza_name from customer_orders a inner join runner_orders b on a.order_id = b.order_id inner join pizza_names c on a.pizza_id=c.pizza_id where b.cancellation NOT LIKE '%Cancellation%' group by c.pizza_name"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "5a0024bf-f42a-4394-a935-a8236cf31023"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(2 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.078"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 9,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "total_pizza"
+                                    },
+                                    {
+                                        "name": "pizza_name"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "9",
+                                    "1": "Meatlovers"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "Vegetarian"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>total_pizza</th><th>pizza_name</th></tr><tr><td>9</td><td>Meatlovers</td></tr><tr><td>3</td><td>Vegetarian</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 9
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt:- \n",
+                "\n",
+                "- Difference between VIEW and Temporary Table - temp table is only active till the session but data for the view is stored in db.\n",
+                "- Differnce between varchar and text."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "560d5b88-0c6d-4296-b98c-104f59f4d42b"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**5. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">How many Vegetarian and Meatlovers were ordered by each customer?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Here as we have to find the different type of pizzas ordered by each customer, so we will use two columns in <b>GROUP BY </b>clause. First we will group it by pizza_name and then by customer_id to get the desired output.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "355d78d2-f331-4e0e-a61c-566f82cbda00"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(a.order_id) as pizzas_ordered,b.pizza_name,a.customer_id from customer_orders a inner join pizza_names b on a.pizza_id = b.pizza_id group by b.pizza_name,a.customer_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "91b96b4e-9a1c-477e-9aa0-2273ee4b6718"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(8 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.024"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 44,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "pizzas_ordered"
+                                    },
+                                    {
+                                        "name": "pizza_name"
+                                    },
+                                    {
+                                        "name": "customer_id"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "2",
+                                    "1": "Meatlovers",
+                                    "2": "101"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "Vegetarian",
+                                    "2": "101"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "Meatlovers",
+                                    "2": "102"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "Vegetarian",
+                                    "2": "102"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "Meatlovers",
+                                    "2": "103"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "Vegetarian",
+                                    "2": "103"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "Meatlovers",
+                                    "2": "104"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "Vegetarian",
+                                    "2": "105"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>pizzas_ordered</th><th>pizza_name</th><th>customer_id</th></tr><tr><td>2</td><td>Meatlovers</td><td>101</td></tr><tr><td>1</td><td>Vegetarian</td><td>101</td></tr><tr><td>2</td><td>Meatlovers</td><td>102</td></tr><tr><td>1</td><td>Vegetarian</td><td>102</td></tr><tr><td>3</td><td>Meatlovers</td><td>103</td></tr><tr><td>1</td><td>Vegetarian</td><td>103</td></tr><tr><td>3</td><td>Meatlovers</td><td>104</td></tr><tr><td>1</td><td>Vegetarian</td><td>105</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 44
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**6. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the maximum number of pizzas delivered in a single order?</span>**\n",
+                "\n",
+                "Ans - Here I have used two tables i.e runner\\_orders and customer\\_orders. Set where condition to filter out the delivered orders, group them by order\\_id and ordered them by the pizza count in descending order to check the maxium orders. Lastly used TOP 1 to select only the first row as it would contain the maximum number of pizza ordered."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "99436fcd-8638-47ce-b875-a73acb0d0e1c"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select TOP 1 COUNT(b.pizza_id) as total_pizza, b.order_id from runner_orders a inner join customer_orders b on a.order_id = b.order_id where a.cancellation not like '%Cancellation' group by b.order_id order by total_pizza DESC\n",
+                ""
+            ],
+            "metadata": {
+                "azdata_cell_guid": "dd7f48e6-4ffd-4588-a2b8-acec2c280afb"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(1 row affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.101"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 10,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "total_pizza"
+                                    },
+                                    {
+                                        "name": "order_id"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "3",
+                                    "1": "4"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>total_pizza</th><th>order_id</th></tr><tr><td>3</td><td>4</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 10
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**7. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">For each customer, how many delivered pizzas had at least 1 change and how many had no changes?</span>**"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "16dc53e4-5cb4-430c-9be4-b43863cc7234"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "In customer orders table exclusions and extras table had different values to represent no changes made. So, updated them to bring more uniformity."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "4f895a79-fbb2-4f8b-855e-bcbb08480ec1"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "update customer_orders\n",
+                "set exclusions = 'null', extras = 'null'\n",
+                "where exclusions = '' or  extras = ''"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "fc391b77-546d-41be-9672-9d4aafe1e3ff",
+                "tags": [
+                    "hide_input"
+                ]
+            },
+            "outputs": [],
+            "execution_count": null
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Then wrote the query with desired tables(created a view \\[orders\\_delivered\\] to get the orders that were succesfully delivered and not cancelled) and set the where condition as **equal to 'null'** and **not equal to 'null'** respectively**.**"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "7c1ba308-d3c0-49a0-9694-c59f990e2392"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(a.order_id) as no_changes_pizza, b.customer_id from orders_delivered a inner join customer_orders b on a.order_id = b.order_id where exclusions = 'null' and extras = 'null' group by b.customer_id\n",
+                "\n",
+                "select count(a.order_id) as atleast_one_change_pizza, b.customer_id from orders_delivered a inner join customer_orders b on a.order_id = b.order_id where exclusions <> 'null' or extras <> 'null' group by b.customer_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "19177ab1-561e-4b15-ba72-76040348c228"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(2 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(5 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.192"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 11,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "no_changes_pizza"
+                                    },
+                                    {
+                                        "name": "customer_id"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "102"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "104"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>no_changes_pizza</th><th>customer_id</th></tr><tr><td>1</td><td>102</td></tr><tr><td>1</td><td>104</td></tr></table>"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 11,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "atleast_one_change_pizza"
+                                    },
+                                    {
+                                        "name": "customer_id"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "2",
+                                    "1": "101"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "102"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "103"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "104"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "105"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>atleast_one_change_pizza</th><th>customer_id</th></tr><tr><td>2</td><td>101</td></tr><tr><td>2</td><td>102</td></tr><tr><td>3</td><td>103</td></tr><tr><td>2</td><td>104</td></tr><tr><td>1</td><td>105</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 11
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**8. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">How many pizzas were delivered that had both exclusions and extras?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; font-weight: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Similar to the above question but here we don't need to group it by customer_id as we only want the total number of pizzas.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "a73280ac-cb70-43d2-b934-37bbc3227c83"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(a.order_id) as total_pizzas from orders_delivered a inner join customer_orders b on a.order_id = b.order_id where exclusions <> 'null' and extras <> 'null'"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "e72747c7-2fe2-4507-9938-7f8b3a35b683"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(1 row affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.034"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 13,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "total_pizzas"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "7"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>total_pizzas</th></tr><tr><td>7</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 13
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**9. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the total volume of pizzas ordered for each hour of the day?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Used DATEPART() here to get hours out of order_time column and grouped it to get total orders for each hour.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "606935c5-df2c-4649-b176-d62b2e90b1a0"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(order_id),DATEPART(HOUR,order_time) from customer_orders group by DATEPART(HOUR,order_time)"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "d747f911-87a9-4cc6-8fb8-b0724b4b8c05"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(6 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.057"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 14,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "(No column name)"
+                                    },
+                                    {
+                                        "name": "(No column name)"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "11"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "13"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "18"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "19"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "21"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "23"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>(No column name)</th><th>(No column name)</th></tr><tr><td>1</td><td>11</td></tr><tr><td>3</td><td>13</td></tr><tr><td>3</td><td>18</td></tr><tr><td>1</td><td>19</td></tr><tr><td>3</td><td>21</td></tr><tr><td>3</td><td>23</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 14
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt - \n",
+                "\n",
+                "- DATEPART() - we can use it to get different parts of the datetime column."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "fc6bb3d0-3421-45ea-848d-421a7aead456"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**10. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the volume of orders for each day of the week?</span>**\n",
+                "\n",
+                "Ans - <span style=\"color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64); font-family: -apple-system, BlinkMacSystemFont, sans-serif;\">Used DATETIME() here to get days of the week out of order_time column and grouped it to get total orders for each day.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "ee634f31-7d5f-40f7-ab30-f067da7da3f3"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select count(order_id),DATENAME(dw,order_time) from customer_orders group by DATENAME(dw,order_time)"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "1cad864b-9b03-44e7-91f4-0a2be1221cbf"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(4 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.059"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 15,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "(No column name)"
+                                    },
+                                    {
+                                        "name": "(No column name)"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "5",
+                                    "1": "Friday"
+                                },
+                                {
+                                    "0": "5",
+                                    "1": "Monday"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "Saturday"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "Sunday"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>(No column name)</th><th>(No column name)</th></tr><tr><td>5</td><td>Friday</td></tr><tr><td>5</td><td>Monday</td></tr><tr><td>3</td><td>Saturday</td></tr><tr><td>1</td><td>Sunday</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 15
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt - \n",
+                "\n",
+                "- DATENAME() - used it to get the day of the week from datetime column"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "80c82284-5f23-40a9-8576-4702c48856f2"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "## <span style=\"color: rgb(34, 34, 34); font-family: -system-ui, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;; font-size: 20px; font-weight: bold; text-align: center;\">Runner and Customer Experience</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "3fa723fe-cb72-4508-b6fb-62c95d5132da"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**1. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">How many runners signed up for each 1 week period? (i.e. week starts</span> `2021-01-01`<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">)</span>**\n",
+                "\n",
+                "Ans - Didn't understand this question properly as the question asks how many runners signed up for 1 week period. I don't have the quiting dates of runners so, I can't comment on it. Though, printed out the week number according to their registeration date using **DATENAME(wk,registeration\\_date).**"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "b45a64d6-0cda-4f41-a103-a0b1315211e8"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "--set DATEFIRST 5\n",
+                "select runner_id, DATENAME(wk,registration_date) from runners"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "a3b18bf4-6712-4eca-9ec9-91b316c9af55",
+                "tags": []
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(4 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.082"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 5,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "runner_id"
+                                    },
+                                    {
+                                        "name": "(No column name)"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "1"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "1"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "2"
+                                },
+                                {
+                                    "0": "4",
+                                    "1": "3"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>runner_id</th><th>(No column name)</th></tr>",
+                            "<tr><td>1</td><td>1</td></tr>",
+                            "<tr><td>2</td><td>1</td></tr>",
+                            "<tr><td>3</td><td>2</td></tr>",
+                            "<tr><td>4</td><td>3</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 5
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**2. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the average time in minutes it took for each runner to arrive at the Pizza Runner HQ to pickup the order?</span>**\n",
+                "\n",
+                "Ans - In this question as we are asked to print out the avg time taken by each runner to pickup order. The logic I used here was that the  \n",
+                "<span style=\"caret-color: rgb(64, 64, 64); color: rgb(64, 64, 64); font-family: -apple-system, BlinkMacSystemFont, sans-serif;\"><b>pickup time = pickup_time(from runner_orders table) - order_time(customer_order) table.&nbsp;</b></span> \n",
+                "\n",
+                "<span style=\"caret-color: rgb(64, 64, 64); color: rgb(64, 64, 64); font-family: -apple-system, BlinkMacSystemFont, sans-serif;\">As we would only considered successfull orders here, I picked only the orders where Cancellation was null.&nbsp;<br>Then I picked only the minutes of both these timmings by using <b>DATENAME(mi,pickup time) </b>and <b>casted</b> it as <b>int </b>to perform sum and count.&nbsp;<br>Then I grouped it by runners and found the average pickup time in minutes for each runner.&nbsp;</span> \n",
+                "\n",
+                "<span style=\"caret-color: rgb(64, 64, 64); color: rgb(64, 64, 64); font-family: -apple-system, BlinkMacSystemFont, sans-serif;\">UPDATE - now confused in this due to the next question.&nbsp;<br>I believe,&nbsp;</span> **pickup\\_time(from runner\\_orders table) - order\\_time(customer\\_order) table** <span style=\"font-family: -apple-system, BlinkMacSystemFont, sans-serif; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">equals to preparation time rather than pickup time. But then I don't have any other way to find out the time in which the order was picked from the pizza HQ.</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "3c26c47b-2663-4806-ab40-9c8e1a775a99"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select b.runner_id,sum(cast(datename(mi,(pickup_time-order_time))as int))/count(datename(mi,(pickup_time-order_time))) as Avg_time_in_minutes from customer_orders a inner join orders_delivered b on a.order_id = b.order_id group by runner_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "b11b2cd2-2256-424d-8378-f7a6f20f4f05"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(3 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.052"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "execution_count": 56,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "runner_id"
+                                    },
+                                    {
+                                        "name": "Avg_time_in_minutes"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "15"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "23"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "10"
+                                }
+                            ]
+                        },
+                        "text/html": "<table><tr><th>runner_id</th><th>Avg_time_in_minutes</th></tr><tr><td>1</td><td>15</td></tr><tr><td>2</td><td>23</td></tr><tr><td>3</td><td>10</td></tr></table>"
+                    },
+                    "metadata": {}
+                }
+            ],
+            "execution_count": 56
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **3. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Is there any relationship between the number of pizzas and how long the order takes to prepare?</span>**\n",
+                "\n",
+                "Ans - Here I found out the preparation time by **pickup\\_time(from runner\\_orders table) - order\\_time(customer\\_order) table.**  \n",
+                "Here we can see that it took approximately 10 minutes to prepare 1 pizza. So, as the number of pizza's increase the preparation time also increases by 10 minutes(approx.)."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "d4799fe1-3f31-493e-9542-e5836cb248b7"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select a.order_id,pizza_id,cast(datename(mi,(pickup_time - order_time)) as int) as preparation_time from customer_orders a inner join runner_orders b on a.order_id=b.order_id  where cancellation not like '%Cancellation%' order by a.order_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "e24653c3-b3ee-47d5-b15f-2cfa39e00bff"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(12 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.031"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 11,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "order_id"
+                                    },
+                                    {
+                                        "name": "pizza_id"
+                                    },
+                                    {
+                                        "name": "preparation_time"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "1",
+                                    "2": "10"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "1",
+                                    "2": "10"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "1",
+                                    "2": "21"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "2",
+                                    "2": "21"
+                                },
+                                {
+                                    "0": "4",
+                                    "1": "1",
+                                    "2": "29"
+                                },
+                                {
+                                    "0": "4",
+                                    "1": "1",
+                                    "2": "29"
+                                },
+                                {
+                                    "0": "4",
+                                    "1": "2",
+                                    "2": "29"
+                                },
+                                {
+                                    "0": "5",
+                                    "1": "1",
+                                    "2": "10"
+                                },
+                                {
+                                    "0": "7",
+                                    "1": "2",
+                                    "2": "10"
+                                },
+                                {
+                                    "0": "8",
+                                    "1": "1",
+                                    "2": "20"
+                                },
+                                {
+                                    "0": "10",
+                                    "1": "1",
+                                    "2": "15"
+                                },
+                                {
+                                    "0": "10",
+                                    "1": "1",
+                                    "2": "15"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>order_id</th><th>pizza_id</th><th>preparation_time</th></tr>",
+                            "<tr><td>1</td><td>1</td><td>10</td></tr>",
+                            "<tr><td>2</td><td>1</td><td>10</td></tr>",
+                            "<tr><td>3</td><td>1</td><td>21</td></tr>",
+                            "<tr><td>3</td><td>2</td><td>21</td></tr>",
+                            "<tr><td>4</td><td>1</td><td>29</td></tr>",
+                            "<tr><td>4</td><td>1</td><td>29</td></tr>",
+                            "<tr><td>4</td><td>2</td><td>29</td></tr>",
+                            "<tr><td>5</td><td>1</td><td>10</td></tr>",
+                            "<tr><td>7</td><td>2</td><td>10</td></tr>",
+                            "<tr><td>8</td><td>1</td><td>20</td></tr>",
+                            "<tr><td>10</td><td>1</td><td>15</td></tr>",
+                            "<tr><td>10</td><td>1</td><td>15</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 11
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **4. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the average distance travelled for each customer?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - Here I wrote a function(stackoverflow to the rescue) to return only the numbers from the alphanumeric field(it would have been more easier in postgreSQL probably). After that grouped the data by <b>customer_id</b>&nbsp;and used <b>AVG </b>to find out the average distance travelled for each customer.&nbsp;</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "d67b3f85-4c7d-4ada-8da7-5a5584117738"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "CREATE FUNCTION dbo.udf_GetNumeric\n",
+                "(\n",
+                "  @strAlphaNumeric VARCHAR(256)\n",
+                ")\n",
+                "RETURNS FLOAT\n",
+                "AS\n",
+                "BEGIN\n",
+                "  DECLARE @intAlpha int\n",
+                "  SET @intAlpha = PATINDEX('%[^0-9.]%', @strAlphaNumeric)\n",
+                "  BEGIN\n",
+                "    WHILE @intAlpha > 0\n",
+                "    BEGIN\n",
+                "      SET @strAlphaNumeric = STUFF(@strAlphaNumeric, @intAlpha, 1, '' )\n",
+                "      SET @intAlpha = PATINDEX('%[^0-9.]%', @strAlphaNumeric )\n",
+                "    END\n",
+                "  END\n",
+                "  RETURN ISNULL(@strAlphaNumeric,0)\n",
+                "END\n",
+                "GO"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "51669234-0e4b-4964-9f83-874f14757f3b",
+                "tags": []
+            },
+            "outputs": [],
+            "execution_count": null
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select customer_id,AVG(dbo.udf_GetNumeric(distance)) from orders_delivered a inner join customer_orders b on a.order_id = b.order_id group by customer_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "1bb02e20-37be-48df-b1f4-74cff4538c53",
+                "tags": []
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(5 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.083"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 14,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "customer_id"
+                                    },
+                                    {
+                                        "name": "(No column name)"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "101",
+                                    "1": "20"
+                                },
+                                {
+                                    "0": "102",
+                                    "1": "16.73333333333333"
+                                },
+                                {
+                                    "0": "103",
+                                    "1": "23.399999999999995"
+                                },
+                                {
+                                    "0": "104",
+                                    "1": "10"
+                                },
+                                {
+                                    "0": "105",
+                                    "1": "25"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>customer_id</th><th>(No column name)</th></tr>",
+                            "<tr><td>101</td><td>20</td></tr>",
+                            "<tr><td>102</td><td>16.73333333333333</td></tr>",
+                            "<tr><td>103</td><td>23.399999999999995</td></tr>",
+                            "<tr><td>104</td><td>10</td></tr>",
+                            "<tr><td>105</td><td>25</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 14
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt - \n",
+                "\n",
+                "- creating a function to find out the numerical values from a alpha numeric field"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "2322e5ff-67a7-417d-ab1b-5b7d80edadd8"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **5. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the difference between the longest and shortest delivery times for all orders?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - We can find the duration in numbers from the alpha numeric field using the udf_GetNumeric() function creatred above. I probably could have used a CTE here but I wanted it to be a one-liner query. So I used <b>OVER clause</b>&nbsp;which helped me in windowing(partitioning) of my data. So, for my first window I selected <b>TOP 1</b>&nbsp;row of the duration ordered by descending order and then duration ordered by ascending order in the second window. Subtracted them and got my output.&nbsp;</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "e1a5a450-5a10-4727-8ce3-ab9d92935759"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "select TOP 1 (FIRST_VALUE(dbo.udf_GetNumeric(duration)) OVER (ORDER BY dbo.udf_GetNumeric(duration) desc)) - (FIRST_VALUE(dbo.udf_GetNumeric(duration)) OVER (ORDER BY dbo.udf_GetNumeric(duration))) from orders_delivered"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "471ab157-b996-4ec2-948e-d82c0d1340ac"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(1 row affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.037"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 15,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "(No column name)"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "30"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>(No column name)</th></tr>",
+                            "<tr><td>30</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 15
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt -\n",
+                "\n",
+                "- OVER() clause"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "2fd6f39d-df17-477b-81fb-9e9ec61b130f"
+            }
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "**6. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What was the average speed for each runner for each delivery and do you notice any trend for these values?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - In this question the first CTE contains the number of pizza's ordered for each order_id and then this CTE is joined with runner_orders table which contains the column of average_speed.<br>This is achieved by using the formula Speed = Distance/Time. As the duration is given in minutes we'll devide it by 60 to get the output in km/hr.&nbsp;<br></span> \n",
+                "\n",
+                "However, I'm unable to identify any trend in this."
+            ],
+            "metadata": {
+                "azdata_cell_guid": "2e239c32-ac45-4e06-bd2a-912f0866a56c"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "with pizza_counter as(\n",
+                "select a.order_id,count(pizza_id) as no_of_pizzas_ordered from customer_orders a inner join runner_orders b on a.order_id=b.order_id where cancellation not like '%Cancellation%' group by a.order_id\n",
+                ")\n",
+                "select runner_id,a.order_id,no_of_pizzas_ordered,(dbo.udf_GetNumeric(distance)/(dbo.udf_GetNumeric(duration)/60)) as average_speed \n",
+                "from runner_orders a inner join pizza_counter b on a.order_id = b.order_id where cancellation not like '%Cancellation%' order by runner_id"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "3d82a514-096f-4b89-b16e-753679bd77f2"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(8 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.029"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 18,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "runner_id"
+                                    },
+                                    {
+                                        "name": "order_id"
+                                    },
+                                    {
+                                        "name": "no_of_pizzas_ordered"
+                                    },
+                                    {
+                                        "name": "average_speed"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "1",
+                                    "2": "1",
+                                    "3": "37.5"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "2",
+                                    "2": "1",
+                                    "3": "44.44444444444444"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "3",
+                                    "2": "2",
+                                    "3": "40.2"
+                                },
+                                {
+                                    "0": "1",
+                                    "1": "10",
+                                    "2": "2",
+                                    "3": "60"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "7",
+                                    "2": "1",
+                                    "3": "60"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "8",
+                                    "2": "1",
+                                    "3": "93.6"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "4",
+                                    "2": "3",
+                                    "3": "35.1"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "5",
+                                    "2": "1",
+                                    "3": "40"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>runner_id</th><th>order_id</th><th>no_of_pizzas_ordered</th><th>average_speed</th></tr>",
+                            "<tr><td>1</td><td>1</td><td>1</td><td>37.5</td></tr>",
+                            "<tr><td>1</td><td>2</td><td>1</td><td>44.44444444444444</td></tr>",
+                            "<tr><td>1</td><td>3</td><td>2</td><td>40.2</td></tr>",
+                            "<tr><td>1</td><td>10</td><td>2</td><td>60</td></tr>",
+                            "<tr><td>2</td><td>7</td><td>1</td><td>60</td></tr>",
+                            "<tr><td>2</td><td>8</td><td>1</td><td>93.6</td></tr>",
+                            "<tr><td>2</td><td>4</td><td>3</td><td>35.1</td></tr>",
+                            "<tr><td>3</td><td>5</td><td>1</td><td>40</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 18
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "### **7. <span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">What is the successful delivery percentage for each runner?</span>**\n",
+                "\n",
+                "<span style=\"font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; color: rgb(64, 64, 64); caret-color: rgb(64, 64, 64);\">Ans - In this I made a CTE in which I casted count of orders delivered and total into float as it would help me with percentage. Then I added a NULLIF clause to it to avoid the 'divide by zero exception'(you can fetch the solution without it too) and played with different joins to get the desired output.&nbsp;</span>"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "c8b71ef4-6994-4d11-8555-20ff27c8a282"
+            }
+        },
+        {
+            "cell_type": "code",
+            "source": [
+                "with percentage_table as (\n",
+                "select b.runner_id,cast(count(c.order_id) as float) as delivered_orders,cast(count(a.order_id) as float) as total_orders,NULLIF(count(c.order_id),0) as val from runner_orders a full outer join orders_delivered c on a.order_id = c.order_id right join runners b on a.runner_id = b.runner_id group by b.runner_id\n",
+                ")\n",
+                "select runner_id,\n",
+                "case\n",
+                "when val is null then 0\n",
+                "else (delivered_orders/total_orders)*100\n",
+                "end as percentage_col\n",
+                "from percentage_table"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "b93b8481-0db4-4d11-85a2-d4e4d532fc83"
+            },
+            "outputs": [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Warning: Null value is eliminated by an aggregate or other SET operation."
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "(4 rows affected)"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/html": "Total execution time: 00:00:00.043"
+                    },
+                    "metadata": {}
+                },
+                {
+                    "output_type": "execute_result",
+                    "metadata": {},
+                    "execution_count": 22,
+                    "data": {
+                        "application/vnd.dataresource+json": {
+                            "schema": {
+                                "fields": [
+                                    {
+                                        "name": "runner_id"
+                                    },
+                                    {
+                                        "name": "percentage_col"
+                                    }
+                                ]
+                            },
+                            "data": [
+                                {
+                                    "0": "1",
+                                    "1": "100"
+                                },
+                                {
+                                    "0": "2",
+                                    "1": "75"
+                                },
+                                {
+                                    "0": "3",
+                                    "1": "50"
+                                },
+                                {
+                                    "0": "4",
+                                    "1": "0"
+                                }
+                            ]
+                        },
+                        "text/html": [
+                            "<table>",
+                            "<tr><th>runner_id</th><th>percentage_col</th></tr>",
+                            "<tr><td>1</td><td>100</td></tr>",
+                            "<tr><td>2</td><td>75</td></tr>",
+                            "<tr><td>3</td><td>50</td></tr>",
+                            "<tr><td>4</td><td>0</td></tr>",
+                            "</table>"
+                        ]
+                    }
+                }
+            ],
+            "execution_count": 22
+        },
+        {
+            "cell_type": "markdown",
+            "source": [
+                "Things learnt - \n",
+                "\n",
+                "- NULLIF()"
+            ],
+            "metadata": {
+                "azdata_cell_guid": "2059e439-2f04-4b4b-bb6e-f3c5c2356d89"
+            }
+        }
+    ]
+}
